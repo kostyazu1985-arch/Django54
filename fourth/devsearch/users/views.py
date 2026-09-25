@@ -4,6 +4,8 @@ from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib import messages
+from django.contrib.auth.forms import UserCreationForm
+from .forms import CustomUserCreationForm
 
 
 # Create your views here.
@@ -56,6 +58,20 @@ def logout_user(request):
 
 def register_user(request):
     page = 'register'
+    form = CustomUserCreationForm()
 
-    context = {'page': page}
+    if request.method == "POST":
+        form = CustomUserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save(commit=False)
+            user.name = user.username.lower()
+            user.save()
+
+            messages.success(request, 'User account was created')
+            login(request, user)
+            return redirect('profile')
+        else:
+            messages.error(request, 'An error occurred durin registration ')
+
+    context = {'page': page, 'form': form}
     return render(request, 'users/login_register.html', context)
