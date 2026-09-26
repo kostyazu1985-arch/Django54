@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 
 
 # @receiver(post_save, sender=Profile)
-def profile_updated(sender, instance, created, **kwargs):
+def create_profile(sender, instance, created, **kwargs):
     print("profile signal")
     if created:
         user = instance
@@ -16,14 +16,14 @@ def profile_updated(sender, instance, created, **kwargs):
             name=user.first_name
         )
 
-post_save.connect(profile_updated, sender=Profile)
+post_save.connect(create_profile, sender=User)
 
 # @receiver(post_delete, sender=Profile)
-def profile_delete(sender, instance, **kwargs):
+def delete_user(sender, instance, **kwargs):
     user = instance.user
     user.delete()
 
-post_delete.connect(profile_delete, sender=Profile)
+post_delete.connect(delete_user, sender=Profile)
 
 def update_user(sender, instance, created, **kwargs):
     profile = instance
@@ -31,7 +31,7 @@ def update_user(sender, instance, created, **kwargs):
 
     if created is False:
         user.first_name = profile.name
-        user.user_name = profile.user_name
+        user.user_name = profile.username
         user.email = profile.email
         user.save()
 

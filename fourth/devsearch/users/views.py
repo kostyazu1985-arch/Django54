@@ -8,6 +8,7 @@ from .forms import CustomUserCreationForm, ProfileForm
 from django.contrib.auth.decorators import login_required
 
 
+
 # Create your views here.
 def profiles(request):
     prof = Profile.objects.all()
@@ -91,9 +92,15 @@ def user_account(request):
 
 @login_required(login_url='login')
 def edit_account(request):
-    form = ProfileForm()
+    profile = request.user.profile
+    form = ProfileForm(instance=profile)
+
+    if request.method == "POST":
+        form = ProfileForm(request.POST, request.FILES, instance=profile)
+        if form.is_valid():
+            form.save()
+
+            return redirect('account')
 
     context = {'form': form}
     return render(request, 'users/profile_form.html', context)
-
-
