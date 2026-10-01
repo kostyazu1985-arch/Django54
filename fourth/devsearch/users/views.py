@@ -215,3 +215,6 @@ def create_message(request, pk):
     context = {'recipient': recipient, 'form': form}
     return render(request, 'users/message_form.html', context)
 
+
+
+
