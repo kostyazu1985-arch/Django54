@@ -3,5 +3,6 @@ from .views import *
 
 urlpatterns = [
     path('', BlogHome.as_view(), name='index'),
+    path('contact/', ContactFormView.as_view(), name='contact'),
 ]
 
